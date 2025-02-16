@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIVERDALE ACADEMY</title>
+    <link rel="stylesheet" href="work.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Add Supabase Client Library -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <!-- Add QR code and Chart.js libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('service-worker.js').then(function(registration) {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                }).catch(function(error) {
+                    console.error('Service Worker registration failed:', error);
+                });
+            });
+        }
+    </script>
+
+    <!-- Add this in the head section if not already present -->
+    <style>
+        /* Modern color palette */
+        :root {
+            --primary: #1a5f7a;          /* Changed from dark blue to softer blue */
+            --secondary: #66c1bc;        /* Soft teal */
+            --accent: #c9e4ca;          /* Soft mint */
+            --light: #f7f9fc;
+            --dark: #34495e;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+        }
+
+        body {
+            background: #f5f7fa;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header-container {
+            position: relative;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .main-header {
+            background: linear-gradient(135deg, #ffffff, #f0f8ff);
+            padding: 25px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: visible;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .school-logo {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 3px solid var(--secondary);
+            background-color: white;
+            flex-shrink: 0;
+        }
+
+        .header-text {
+            text-align: left;
+            flex-grow: 1;
+        }
+
+        .main-header h1 {
+            font-size: 38px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0;
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(45deg, #1a5f7a, #66c1bc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 
+                2px 2px 4px rgba(255,255,255,0.5),
+                -2px -2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            font-size: 24px;
+            color: #1a5f7a;
+            margin-top: 10px;
+            font-weight: 600;
+            text-shadow: 
+                1px 1px 2px rgba(255,255,255,0.8),
+                -1px -1px 2px rgba(0,0,0,0.1);
+            letter-spacing: 1.5px;
+        }
+
+        .marquee-container {
+            background: linear-gradient(90deg, #1a5f7a, #66c1bc, #1a5f7a);
+            padding: 12px 0;
+            margin: 20px 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .marquee-text {
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .dashboard {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        .developer-info {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        @media print {
+            body * { visibility: hidden; }
+            .payslip-content,
+            .payslip-content * {
+                visibility: visible;
+            }
+            .payslip-content {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 20px;
+            }
+            .action-buttons { display: none !important; }
+        }
+
+        .payslip-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .logo {
+            width: 100px;
+            height: auto;
+        }
+
+        .school-info {
+            text-align: center;
+        }
+
+        .payslip-body {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .employee-info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .salary-breakdown {
+            display: flex;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .earnings-section, .deductions-section {
+            flex: 1;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .salary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .salary-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            margin-top: 10px;
+            border-top: 2px solid #ddd;
+            font-weight: bold;
+        }
+
+        .net-salary-section {
+            background: #1a5f7a;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .net-amount {
+            display: flex;
+            justify-content: space-between;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .payment-details {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .info-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .info-group label {
+            font-weight: bold;
+            color: #666;
+        }
+
+        .qr-section {
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .payslip-footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+        }
+
+        @media print {
+            .payslip-content {
+                box-shadow: none;
+            }
+            
+            .action-buttons {
+                display: none;
+            }
+        }
+
+        .generate-btn {
+            background: #1a5f7a;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .generate-btn:hover {
+            background: #157192;
+        }
+
+        .qr-section {
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            width: 130px;
+            height: 130px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #qrCodeContainer {
+            display: inline-block;
+            padding: 5px;
+            background: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 1200px;
+            position: relative;
+        }
+
+        .payslip-header {
+            margin-bottom: 30px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background: #fff;
+            border-bottom: 2px solid #eee;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+        }
+
+        .school-info {
+            text-align: center;
+            flex-grow: 1;
+            margin: 0 20px;
+        }
+
+        .school-info h2 {
+            color: #1a5f7a;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .school-info h3 {
+            color: #333;
+            font-size: 24px;
+            margin: 10px 0;
+        }
+
+        .school-info p {
+            color: #666;
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        /* Update modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 20px auto;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 1200px;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .button-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .action-button {
+            background: #1a5f7a;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+
+        .action-button:hover {
+            background: #157192;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 20px auto;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 800px;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .preview-controls {
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 15px;
+            text-align: right;
+            border-bottom: 1px solid #ddd;
+            z-index: 1000;
+        }
+
+        .print-btn, .cancel-btn {
+            padding: 10px 20px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .print-btn {
+            background: #1a5f7a;
+            color: white;
+        }
+
+        .cancel-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .payslip-container {
+            padding: 20px;
+            background: white;
+        }
+
+        .detail-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 10px;
+        }
+
+        .detail-group {
+            flex: 1;
+        }
+
+        .detail-group label {
+            font-weight: bold;
+            color: #666;
+        }
+
+        .salary-details {
+            display: flex;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .earnings-section, .deductions-section {
+            flex: 1;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+        }
+
+        .total-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            margin-top: 10px;
+            border-top: 2px solid #ddd;
+            font-weight: bold;
+        }
+
+        .net-pay-section {
+            background: #1a5f7a;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .net-pay {
+            display: flex;
+            justify-content: space-between;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        @media print {
+            .preview-controls {
+                display: none;
+            }
+            
+            .payslip-container {
+                padding: 0;
+            }
+        }
+
+        .form-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .form-section h3 {
+            color: #1a5f7a;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus {
+            border-color: #1a5f7a;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(26, 95, 122, 0.2);
+        }
+
+        .generate-btn {
+            background: #1a5f7a;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        .generate-btn:hover {
+            background: #157192;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 8px;
+        }
+
+        .action-button {
+            background: #1a5f7a;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        .action-button:hover {
+            background: #157192;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="mainContainer">
+        <div class="header-container">
+            <div class="main-header">
+                <img src="eastlogo.jpg" alt="School Logo" class="school-logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/120x120?text=School+Logo'">
+                <div class="header-text">
+                    <h1>Riverdale Academy</h1>
+                    <div class="subtitle">Student Record System</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <a href="index.html" class="action-button salary-button">
+                <i class="fas fa-money-bill-wave"></i>
+                PAYMENT OF SALARIES
+            </a>
+            <a href="work.html" class="action-button return-button">
+                <i class="fas fa-arrow-left"></i>
+                RETURN TO MAIN MENU
+            </a>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div class="dashboard-container">
+            <h2>Dashboard</h2>
+            <div class="dashboard-inner">
+                <div class="marquee-container">
+                    <marquee behavior="scroll" direction="left" scrollamount="5" class="marquee-text">
+                        Welcome to Riverdale Academy and Day Care | System Developed by Chinyama Richard | 
+                        Call: 0962299100, 0765099249
+                    </marquee>
+                </div>
+                
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="stat-title">Total Fees Collected</div>
+                        <div class="stat-value">K<span id="totalFees">0</span></div>
+                        <div class="stat-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>This Term</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-title">Average Fees Collected</div>
+                        <div class="stat-value">K<span id="averageFees">0</span></div>
+                        <div class="stat-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>Per Student</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <div class="stat-title">Total Students Enrolled</div>
+                        <div class="stat-value"><span id="totalStudents">0</span></div>
+                        <div class="stat-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>Active Students</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grade-counts">
+                    <div class="count-box">G1: <span id="grade1Count">0</span></div>
+                    <div class="count-box">G2: <span id="grade2Count">0</span></div>
+                    <div class="count-box">G3: <span id="grade3Count">0</span></div>
+                    <div class="count-box">G4: <span id="grade4Count">0</span></div>
+                    <div class="count-box">G5: <span id="grade5Count">0</span></div>
+                    <div class="count-box">G6: <span id="grade6Count">0</span></div>
+                    <div class="count-box">G7: <span id="grade7Count">0</span></div>
+                    <div class="count-box">G8: <span id="grade8Count">0</span></div>
+                    <div class="count-box">G9: <span id="grade9Count">0</span></div>
+                    <div class="count-box total">Total: <span id="totalCount">0</span></div>
+                </div>
+
+                <!-- Dashboard Grade Selection Container -->
+                <div class="dashboard-selection-container">
+                    <div class="selection-group">
+                        <select id="gradeSelect" class="dashboard-select">
+                            <option value="">Select Grade</option>
+                            <option value="1">Grade 1</option>
+                            <option value="2">Grade 2</option>
+                            <option value="3">Grade 3</option>
+                            <option value="4">Grade 4</option>
+                            <option value="5">Grade 5</option>
+                            <option value="6">Grade 6</option>
+                            <option value="7">Grade 7</option>
+                            <option value="8">Grade 8</option>
+                            <option value="9">Grade 9</option>
+                        </select>
+                        <select id="termSelect" class="dashboard-select">
+                            <option value="">Select Term</option>
+                            <option value="1">Term 1</option>
+                            <option value="2">Term 2</option>
+                            <option value="3">Term 3</option>
+                        </select>
+                        <input type="number" id="yearInput" class="dashboard-input" min="2024" max="2030" placeholder="Enter Year (2024-2030)">
+                    </div>
+                    <div class="dashboard-buttons">
+                        <button onclick="checkGradePayments()" class="dashboard-btn">Check Payments</button>
+                        <button onclick="addSchoolFees()" class="dashboard-btn">Add School Fees</button>
+                        <button onclick="deleteSchoolFees()" class="dashboard-btn">Delete School Fees</button>
+                        <button onclick="refreshDashboard()" class="dashboard-btn">Refresh</button>
+                        <button onclick="saveDashboard()" class="dashboard-btn save-btn">Save Data</button>
+                        <button onclick="deleteDashboard()" class="dashboard-btn delete-btn">Delete All</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="data-visualization">
+            <div class="charts-row">
+                <!-- Gender Distribution -->
+                <div class="chart-box">
+                    <h3>Gender Distribution</h3>
+                    <canvas id="genderChart" width="300" height="200"></canvas>
+                </div>
+                
+                <!-- Grade Distribution -->
+                <div class="chart-box">
+                    <h3>Grade Distribution</h3>
+                    <canvas id="gradeChart" width="300" height="200"></canvas>
+                </div>
+                
+                <!-- Term Distribution -->
+                <div class="chart-box">
+                    <h3>Term Distribution</h3>
+                    <canvas id="termChart" width="300" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grade Summary Section -->
+        <div class="grade-summary-container">
+            <h2>Grade Summary</h2>
+            <div class="grade-summary-inner">
+                <div id="gradeSummaryContainer" class="scrollable-table">
+                    <div id="gradeSummary"></div>
+                </div>
+                <button onclick="deleteGradeSummary()">Delete</button>
+                <button onclick="saveGradeSummaryToFile()">Save</button>
+                <button onclick="refreshGradeSummary()">Refresh</button>
+                <button id="viewSummaryBtn">View</button>
+                <button id="hideSummaryBtn" class="hidden">Hide</button>
+            </div>
+        </div>
+
+        <!-- Payment Search Section -->
+        <div class="payment-search-container">
+            <h2>Search Payment</h2>
+            <div class="payment-search-inner">
+                <div class="search-fields">
+                    <select id="paymentStatusSearch">
+                        <option value="">Select Payment Status</option>
+                        <option value="full">Full Payment</option>
+                        <option value="partial">Partial Payment</option>
+                        <option value="none">No Payment</option>
+                    </select>
+                    <select id="gradeSearch">
+                        <option value="">Select Grade</option>
+                        <option value="1">Grade 1</option>
+                        <option value="2">Grade 2</option>
+                        <option value="3">Grade 3</option>
+                        <option value="4">Grade 4</option>
+                        <option value="5">Grade 5</option>
+                        <option value="6">Grade 6</option>
+                        <option value="7">Grade 7</option>
+                        <option value="8">Grade 8</option>
+                        <option value="9">Grade 9</option>
+                    </select>
+                    <select id="termSearch">
+                        <option value="">Select Term</option>
+                        <option value="1">Term 1</option>
+                        <option value="2">Term 2</option>
+                        <option value="3">Term 3</option>
+                    </select>
+                    <input type="number" id="yearSearch" min="2024" max="2030" placeholder="Enter Year">
+                </div>
+                
+                <div class="search-actions">
+                    <button onclick="searchPaymentStatus()">Search</button>
+                    <button onclick="viewPaymentSearch()" id="viewPaymentBtn">View</button>
+                    <button onclick="hidePaymentSearch()" id="hidePaymentBtn" style="display: none;">Hide</button>
+                </div>
+                
+                <!-- Results Table -->
+                <div id="paymentSearchResults" style="display: none; margin-top: 20px;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Grade</th>
+                                <th>Fees Paid</th>
+                                <th>Balance</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentSearchBody"></tbody>
+                    </table>
+                    <div id="noPaymentResults" style="display: none;">
+                        No matching records found
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <form id="studentForm" class="student-form-container">
+            <h2>Add/Edit Student</h2>
+            
+            <!-- Basic Information Section -->
+            <div class="form-section">
+                <div class="section-header">Basic Information</div>
+                <div class="basic-info-section">
+                    <input type="text" id="studentNumber" readonly placeholder="Student Number (Auto-generated)">
+                    <input type="text" id="studentName" placeholder="Student Name" required>
+                    <select id="gender" required>
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Contact Information Section -->
+            <div class="form-section">
+                <div class="section-header">Contact Information</div>
+                <div class="contact-info-section">
+                    <input type="tel" id="phoneNumber" placeholder="Parent's Phone Number" required>
+                    <input type="text" id="address" placeholder="Address" required>
+                    <input type="email" id="email" placeholder="Email Address (Optional)">
+                </div>
+            </div>
+
+            <!-- Academic Information Section -->
+            <div class="form-section">
+                <div class="section-header">Academic Information</div>
+                <div class="academic-info-section">
+                    <select id="grade" required onchange="updateFeesForGrade()">
+                        <option value="">Select Grade</option>
+                        <option value="1">Grade 1</option>
+                        <option value="2">Grade 2</option>
+                        <option value="3">Grade 3</option>
+                        <option value="4">Grade 4</option>
+                        <option value="5">Grade 5</option>
+                        <option value="6">Grade 6</option>
+                        <option value="7">Grade 7</option>
+                        <option value="8">Grade 8</option>
+                        <option value="9">Grade 9</option>
+                    </select>
+                    <select id="term" required>
+                        <option value="">Select Term</option>
+                        <option value="1">Term 1</option>
+                        <option value="2">Term 2</option>
+                        <option value="3">Term 3</option>
+                    </select>
+                    <input type="number" id="year" placeholder="Year" required min="2024" max="2030">
+                </div>
+            </div>
+
+            <!-- Payment Information Section -->
+            <div class="form-section">
+                <div class="section-header">Payment Information</div>
+                <div class="academic-info-section">
+                    <input type="number" id="fees" placeholder="Amount Paid" required>
+                    <input type="date" id="date" required>
+                </div>
+            </div>
+
+            <!-- Form Buttons -->
+            <div class="form-buttons">
+                <button type="submit" style="background-color: #87CEEB; color: #000; font-weight: bold;">Submit</button>
+                <button type="button" onclick="resetForm()">New</button>
+            </div>
+        </form>
+
+        <!-- Grade Selection Container -->
+        <div class="grade-selection-container">
+            <select id="gradeSelect">
+                <option value="">Select Grade</option>
+                <option value="1">Grade 1</option>
+                <option value="2">Grade 2</option>
+                <option value="3">Grade 3</option>
+                <option value="4">Grade 4</option>
+                <option value="5">Grade 5</option>
+                <option value="6">Grade 6</option>
+                <option value="7">Grade 7</option>
+                <option value="8">Grade 8</option>
+                <option value="9">Grade 9</option>
+            </select>
+            <select id="termSelect">
+                <option value="">Select Term</option>
+                <option value="1">Term 1</option>
+                <option value="2">Term 2</option>
+                <option value="3">Term 3</option>
+            </select>
+            <input type="number" id="yearInput" min="2024" max="2030" placeholder="Enter Year (2024-2030)">
+        </div>
+
+        <div class="search-container">            
+            <input type="text" id="searchInput" placeholder="Search by name, grade, or student number">
+            <button onclick="searchStudents()">Search</button>
+            <button onclick="hideTable()">Hide</button>
+            <button onclick="viewTable()">View</button>
+            <button onclick="deleteTable()">Delete</button>
+        </div>
+
+        <div id="gradeContainer"></div>
+
+        <div id="invoiceModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Student Invoice</h2>
+                <div id="invoiceContent"></div>
+                <button onclick="printInvoice()">Print Invoice</button>
+                <p style="text-align: center; margin-top: 20px;">System developed by Chinyama Richard<br>Call: 0962299100</p>
+            </div>
+        </div>
+
+        <div id="payrollModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closePayrollModal()">&times;</span>
+                <h2>Employee Payroll</h2>
+                <form id="payrollForm">
+                    <!-- Personal Information -->
+                    <div class="form-section">
+                        <h3>Personal Information</h3>
+                        <div class="form-group">
+                            <label for="employeeName">Employee Name:</label>
+                            <input type="text" id="employeeName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="employeeNumber">Employee Number:</label>
+                            <input type="text" id="employeeNumber" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="nrcNumber">NRC Number:</label>
+                            <input type="text" id="nrcNumber" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="department">Department:</label>
+                            <input type="text" id="department" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="position">Position:</label>
+                            <input type="text" id="position" required>
+                        </div>
+                    </div>
+
+                    <!-- Salary Information -->
+                    <div class="form-section">
+                        <h3>Salary Details</h3>
+                        <div class="form-group">
+                            <label for="basicSalary">Basic Salary:</label>
+                            <input type="number" id="basicSalary" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="housingAllowance">Housing Allowance:</label>
+                            <input type="number" id="housingAllowance" step="0.01" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="transportAllowance">Transport Allowance:</label>
+                            <input type="number" id="transportAllowance" step="0.01" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="overtimeHours">Overtime Hours:</label>
+                            <input type="number" id="overtimeHours" step="1" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="overtimeRate">Overtime Rate (per hour):</label>
+                            <input type="number" id="overtimeRate" step="0.01" value="0">
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <button type="submit" class="generate-btn">Generate Payslip</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script type="module" src="work-new.js"></script>
+    </div>
+    <script>
+        // Service Worker registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                    .then(registration => {
+                        console.log('ServiceWorker registered for offline use');
+                    })
+                    .catch(error => {
+                        console.error('ServiceWorker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+    <script src="work.js"></script>
+    <script>
+        // Supabase initialization
+        const SUPABASE_URL = 'https://wsnbdqqadxbmhtjmxjwq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndzbmJkcXFhZHhibWh0am14andxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk2ODUzMjYsImV4cCI6MjA1NTI2MTMyNn0.68CIWGdlKU_LTrjS2QXkxY1Z4wPkharnrISS4eHcvnI';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+</body>
+</html>

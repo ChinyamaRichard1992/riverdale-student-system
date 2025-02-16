@@ -1,0 +1,8 @@
+[build]
+  publish = "/"
+  command = ""
+
+[[redirects]]
+  from = "/*"
+  to = "/work.html"
+  status = 200 
