@@ -448,17 +448,23 @@ input[readonly] {
 
 /* Style the return button for screen display */
 .return-button {
-    display: inline-block;
-    background: #87CEEB;
-    color: #000;
-    padding: 10px 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    padding: 8px 15px;
     border: none;
-    border-radius: 4px;
+    border-radius: 20px;
     text-decoration: none;
-    font-weight: bold;
-    margin: 15px 0;
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 0;
 }
+
 .btn-view, .btn-hide, .btn-delete, .btn-print {
     display: flex;
     align-items: center;
@@ -742,53 +748,41 @@ input[readonly] {
 
 /* Action Buttons Styles */
 .action-buttons {
-    position: fixed;
+    position: absolute;
     right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 10px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 15px;
     z-index: 1000;
 }
 
-.action-button {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 15px 25px;
-    border-radius: 10px;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 16px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-    color: white;
-}
-
-.salary-button {
-    background: linear-gradient(135deg, #3498db, #2980b9);
-}
-
 .return-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     background: linear-gradient(135deg, #e74c3c, #c0392b);
-}
-
-.action-button:hover {
-    transform: translateX(-5px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
-
-.salary-button:hover {
-    background: linear-gradient(135deg, #2980b9, #2573a7);
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 0;
 }
 
 .return-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     background: linear-gradient(135deg, #c0392b, #a93226);
 }
 
-.action-button i {
-    font-size: 20px;
+.return-button i {
+    font-size: 12px;
 }
 
 /* Make buttons responsive */
@@ -797,12 +791,12 @@ input[readonly] {
         right: 10px;
     }
     
-    .action-button {
-        padding: 12px 20px;
+    .return-button {
+        padding: 8px 15px;
         font-size: 14px;
     }
     
-    .action-button i {
-        font-size: 16px;
+    .return-button i {
+        font-size: 12px;
     }
 } 
